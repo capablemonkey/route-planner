@@ -9,23 +9,34 @@
 
 </head>
 <body>
-  <div id="myMap" style='position:relative;width:600px;height:400px;'></div>
+  <div id="myMap" style='position:relative;width:900px;height:900px;'></div>
 
-
-  <div>
-    <input type="file"
-       id="gpx" name="gpx"
-       accept="*.*">
-  </div>
+  
 
   <div id="status">
-    hello
+    hello, pls load a gpx and press play
   </div>
   
-  <div>
-    <button onclick="advance()">
-      advance
+  <div class="command">
+    <div>
+      gpx here: <input type="file" id="gpx" name="gpx" accept="*.*">
+    </div>
+
+    <button onclick="autoAdvance()">
+      play
     </button>
+    <button onclick="stopAutoAdvance()">
+      stop
+    </button>
+    <button onclick="advance()">
+      step
+    </button>
+
+    <div>
+      skip to point: <input id="pointer" name="" placeholder="pointer number e.g. 100">
+    </div>
+
+    
   </div>
   
 

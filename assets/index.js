@@ -1,9 +1,12 @@
+const ADVANCE_INTERVAL_MS = 500;
+
 var map;
 var x = 40.68444;
 var y = -73.93857;
 var gpxFile = null;
 var points = [];
 var pointer = 0;
+var interval = null;
 
 function GetMap() {
   map = new Microsoft.Maps.Map(document.getElementById('myMap'), {
@@ -11,7 +14,7 @@ function GetMap() {
     heading: 90,
     pitch: 0,
     streetsideOptions: {
-      overviewMapMode: Microsoft.Maps.OverviewMapMode.hidden,
+      // overviewMapMode: Microsoft.Maps.OverviewMapMode.hidden,
       showCurrentAddress: false
     },
     mapTypeId: Microsoft.Maps.MapTypeId.streetside,
@@ -23,16 +26,32 @@ function GetMap() {
 
 function advance() {
   point = points[pointer];
-  pointer += 1;
 
-  $('#status').text(`point ${pointer} of ${points.length}`);
+  // set camera in direction of next point
+  heading = bearing(point, points[pointer + 1])
 
-  heading = 90;
+  $('#status').text(`point ${pointer} of ${points.length}; bearing ${heading}`);
+  // $('#pointer').val(pointer);
+
   changePanorama(point.lat, point.lon, heading);
+
+  pointer += 1;
+}
+
+function autoAdvance() {
+  interval = setInterval(advance, ADVANCE_INTERVAL_MS);
+}
+
+function stopAutoAdvance() {
+  clearInterval(interval);
 }
 
 function changePanorama(x, y, heading) {
   map.setView({ center: new Microsoft.Maps.Location(x, y), heading: heading, pitch: 0 });
+}
+
+const bearing = (pointA, pointB) => {
+  return Math.atan2(pointB.lon - pointA.lon, pointB.lat - pointA.lat) * 180 / Math.PI;
 }
 
 const getPoints = (gpxFile) => {
@@ -43,8 +62,8 @@ const getPoints = (gpxFile) => {
 
   const points = segments.map((s) => {
     return {
-      'lat': s.attributes["lat"].value,
-      'lon': s.attributes["lon"].value
+      'lat': parseFloat(s.attributes["lat"].value),
+      'lon': parseFloat(s.attributes["lon"].value)
     }
   })
 
@@ -70,10 +89,15 @@ function fileHandler() {
   });
 }
 
+function pointerHandler(){
+  $('#pointer').change((e) => {
+    pointer = parseInt(e.target.value)
+  })
+}
+
 function main() {
   fileHandler();
-
-
+  pointerHandler();
 }
 
 main();
