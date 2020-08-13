@@ -30,7 +30,7 @@ function advance() {
   // set camera in direction of next point
   heading = bearing(point, points[pointer + 1])
 
-  $('#status').text(`point ${pointer} of ${points.length}; bearing ${heading}`);
+  $('#status').text(`${point.mile.toFixed(2)} mi; point ${pointer} of ${points.length}`);
   // $('#pointer').val(pointer);
 
   changePanorama(point.lat, point.lon, heading);
@@ -83,6 +83,7 @@ function fileHandler() {
       gpxFile = domparser.parseFromString(loadedFile, "application/xml");
 
       points = getPoints(gpxFile);
+      points = addMileMarkers(points);
     };
 
     reader.readAsText(file);
@@ -94,6 +95,58 @@ function pointerHandler(){
     pointer = parseInt(e.target.value)
   })
 }
+
+function addMileMarkers(points) {
+  var lastMile = 0;
+  var lastPoint = points[0];
+
+  return points.map((p) => {
+    const diff = distance(lastPoint, p);
+    p.mile = lastMile + diff;
+    lastMile = p.mile;
+    lastPoint = p;
+    return p;
+  });
+}
+
+/**
+ * Calculates the haversine distance between point A, and B.
+ * @param {number[]} latlngA [lat, lng] point A
+ * @param {number[]} latlngB [lat, lng] point B
+ * @param {boolean} isMiles If we are using miles, else km.
+ * https://stackoverflow.com/a/48805273
+ */
+const distance = (pointA, pointB) => {
+  let lat1 = pointA.lat;
+  let lat2 = pointB.lat;
+  let lon1 = pointA.lon;
+  let lon2 = pointB.lon;
+  const isMiles = true;
+
+  const toRadian = angle => (Math.PI / 180) * angle;
+  const distance = (a, b) => (Math.PI / 180) * (a - b);
+  const RADIUS_OF_EARTH_IN_KM = 6371;
+
+  const dLat = distance(lat2, lat1);
+  const dLon = distance(lon2, lon1);
+
+  lat1 = toRadian(lat1);
+  lat2 = toRadian(lat2);
+
+  // Haversine Formula
+  const a =
+    Math.pow(Math.sin(dLat / 2), 2) +
+    Math.pow(Math.sin(dLon / 2), 2) * Math.cos(lat1) * Math.cos(lat2);
+  const c = 2 * Math.asin(Math.sqrt(a));
+
+  let finalDistance = RADIUS_OF_EARTH_IN_KM * c;
+
+  if (isMiles) {
+    finalDistance /= 1.60934;
+  }
+
+  return finalDistance;
+};
 
 function main() {
   fileHandler();
