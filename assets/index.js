@@ -14,7 +14,7 @@ function GetMap() {
     heading: 90,
     pitch: 0,
     streetsideOptions: {
-      // overviewMapMode: Microsoft.Maps.OverviewMapMode.hidden,
+      overviewMapMode: Microsoft.Maps.OverviewMapMode.expanded,
       showCurrentAddress: false
     },
     mapTypeId: Microsoft.Maps.MapTypeId.streetside,
