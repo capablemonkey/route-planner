@@ -9,15 +9,12 @@
 
 </head>
 <body>
-  <div id="myMap" style='position:relative;width:900px;height:900px;'></div>
-
-  <div id="status">
-    hello, pls load a gpx and press play
-  </div>
-
   <div class="command">
+    <div id="status">
+      hello, pls load a gpx and press play
+    </div>
     <div>
-      gpx here: <input type="file" id="gpx" name="gpx" accept="*.*">
+      load a GPX file from your computer: <input type="file" id="gpx" name="gpx" accept="*.*">
     </div>
 
     <button onclick="autoAdvance()">
@@ -31,10 +28,12 @@
     </button>
 
     <div>
-      skip to point: <input id="pointer" name="" placeholder="pointer number e.g. 100">
+      skip to point (press enter): <input id="pointer" name="" placeholder="pointer number e.g. 100">
     </div>
 
   </div>
+
+  <div id="map"></div>
 
   <script type="text/javascript" src="assets/index.js"></script>
 </body>

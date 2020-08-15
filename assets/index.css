@@ -1,11 +1,13 @@
 .command {
-  font-size: 30px;
-}
-
-#status {
-  font-size: 30px;
+  padding: 10px;
 }
 
 button {
   font-size: 30px;
+}
+
+#map {
+  width: 100%;
+  min-width: 400px;
+  height: 900px;
 }

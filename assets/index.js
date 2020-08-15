@@ -9,7 +9,7 @@ var pointer = 0;
 var interval = null;
 
 function GetMap() {
-  map = new Microsoft.Maps.Map(document.getElementById('myMap'), {
+  map = new Microsoft.Maps.Map(document.getElementById('map'), {
     zoom: 18,
     heading: 90,
     pitch: 0,
@@ -84,10 +84,22 @@ function fileHandler() {
 
       points = getPoints(gpxFile);
       points = addMileMarkers(points);
+
+      addRouteLine(points, map);
     };
 
     reader.readAsText(file);
   });
+}
+
+function addRouteLine(points, map) {
+  const coords = points.map((p) => new Microsoft.Maps.Location(p.lat, p.lon));
+  var line = new Microsoft.Maps.Polyline(coords, {
+    strokeColor: 'red',
+    strokeThickness: 3
+  });
+
+  map.entities.push(line);
 }
 
 function pointerHandler(){
